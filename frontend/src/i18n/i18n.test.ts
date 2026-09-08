@@ -31,7 +31,7 @@ const NAMESPACES = [
   "validation",
 ] as const;
 
-const LOCALES = ["en", "de", "fr", "es", "it", "pt", "zh", "ru", "da", "ar"] as const;
+const LOCALES = ["en", "fi", "de", "fr", "es", "it", "pt", "zh", "ru", "da", "ar"] as const;
 
 // ---------------------------------------------------------------------------
 // Helpers
