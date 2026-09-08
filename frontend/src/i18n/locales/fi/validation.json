@@ -1,0 +1,17 @@
+{
+  "required": "Tämä kenttä on pakollinen",
+  "requiredEmpty": "Tämä kenttä on pakollinen — täytä se ennen tallentamista.",
+  "invalidEmail": "Virheellinen sähköpostiosoite",
+  "tooLong": "Too pitkä (enintään {{max}} merkkiä)",
+  "tooShort": "Too lyhyt (vähintään {{min}} merkkiä)",
+  "invalidUrl": "Virheellinen URL-osoite",
+  "key.mustStartWithLetter": "Täytyy alku kanssa letter",
+  "key.noUnderscores": "Underscores ovat ei sallittu — käyttää camelCase",
+  "key.noSpaces": "Spaces ovat ei sallittu — käyttää camelCase",
+  "key.noAccents": "Accented merkkiä ovat ei sallittu",
+  "key.lettersAndDigitsOnly": "Vain letters ja digits sallittu (camelCase)",
+  "key.cannotChange": "Avain ei voi olla muuttunut jälkeen creation",
+  "key.duplicate": "Tämä avain on jo käytetty tämä luettelo",
+  "key.valid": "Kelvollinen avain",
+  "key.hint": "Letters ja digits vain, ei separators (e.g. businessFit tai ApplicationToITComponent)"
+}
