@@ -26,7 +26,7 @@ from app.services.sso_service import get_sso_config
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-SUPPORTED_LOCALES = {"en", "de", "fr", "es", "it", "pt", "zh", "ru", "da", "ar"}
+SUPPORTED_LOCALES = {"en", "fi", "de", "fr", "es", "it", "pt", "zh", "ru", "da", "ar"}
 
 
 class UserCreate(BaseModel):
