@@ -18,6 +18,22 @@ import grcEn from "./locales/en/grc.json";
 import notificationsEn from "./locales/en/notifications.json";
 import validationEn from "./locales/en/validation.json";
 
+// Finnish
+import commonFi from "./locales/fi/common.json";
+import authFi from "./locales/fi/auth.json";
+import navFi from "./locales/fi/nav.json";
+import inventoryFi from "./locales/fi/inventory.json";
+import cardsFi from "./locales/fi/cards.json";
+import reportsFi from "./locales/fi/reports.json";
+import adminFi from "./locales/fi/admin.json";
+import bpmFi from "./locales/fi/bpm.json";
+import ppmFi from "./locales/fi/ppm.json";
+import diagramsFi from "./locales/fi/diagrams.json";
+import deliveryFi from "./locales/fi/delivery.json";
+import grcFi from "./locales/fi/grc.json";
+import notificationsFi from "./locales/fi/notifications.json";
+import validationFi from "./locales/fi/validation.json";
+
 // French
 import commonFr from "./locales/fr/common.json";
 import authFr from "./locales/fr/auth.json";
@@ -164,6 +180,7 @@ import validationAr from "./locales/ar/validation.json";
 
 export const SUPPORTED_LOCALES = [
   "en",
+  "fi",
   "de",
   "fr",
   "es",
@@ -178,6 +195,7 @@ export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 export const LOCALE_LABELS: Record<SupportedLocale, string> = {
   en: "English",
+  fi: "Finnish",
   de: "Deutsch",
   fr: "Français",
   es: "Español",
@@ -227,6 +245,22 @@ i18n
         grc: grcEn,
         notifications: notificationsEn,
         validation: validationEn,
+      },
+      fi: {
+        common: commonFi,
+        auth: authFi,
+        nav: navFi,
+        inventory: inventoryFi,
+        cards: cardsFi,
+        reports: reportsFi,
+        admin: adminFi,
+        bpm: bpmFi,
+        ppm: ppmFi,
+        diagrams: diagramsFi,
+        delivery: deliveryFi,
+        grc: grcFi,
+        notifications: notificationsFi,
+        validation: validationFi,
       },
       fr: {
         common: commonFr,
