@@ -6,8 +6,8 @@ from typing import Sequence, Union
 from alembic import op
 from sqlalchemy.sql import text
 
-revision: str = "147"
-down_revision: Union[str, None] = "146"
+revision: str = "148"
+down_revision: Union[str, None] = "147"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
