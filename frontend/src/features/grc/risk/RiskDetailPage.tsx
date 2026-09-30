@@ -22,6 +22,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
@@ -32,6 +33,9 @@ import StepButton from "@mui/material/StepButton";
 import Stepper from "@mui/material/Stepper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import LinkifiedText from "@/components/LinkifiedText";
 import CardPicker from "@/components/CardPicker";
 import MaterialSymbol from "@/components/MaterialSymbol";
@@ -40,6 +44,7 @@ import { DateField } from "@/components/DateField";
 import { api, ApiError } from "@/api/client";
 import { usePageSubject } from "@/hooks/usePageTitle";
 import type {
+  MitigationTask,
   Risk,
   RiskCategory,
   RiskImpact,
@@ -47,6 +52,8 @@ import type {
   RiskStatus,
 } from "@/types";
 import { ExtensionSlot } from "@/lib/extensionHost";
+import { openPrintWindow } from "@/lib/printDocument";
+import { printRisk } from "./riskPrint";
 import AffectedCardsList from "./AffectedCardsList";
 import RiskMatrix from "./RiskMatrix";
 import MitigationTasksPanel, {
@@ -175,6 +182,10 @@ const SIDE_ACTIONS: Record<RiskStatus, SideAction[]> = {
 export default function RiskDetailPage() {
   const { t } = useTranslation("grc");
   const { t: tCommon } = useTranslation("common");
+  // The PDF button reads like the SoAW's, so it borrows the SoAW labels.
+  const { t: tDelivery } = useTranslation("delivery");
+  const theme = useTheme();
+  const compact = useMediaQuery(theme.breakpoints.down("sm"));
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -284,6 +295,20 @@ export default function RiskDetailPage() {
       if (e instanceof ApiError) setError(e.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const exportPdf = async () => {
+    if (!risk) return;
+    // Open before the await, or a pop-up blocker eats the window (Safari/Firefox).
+    const win = openPrintWindow();
+    if (!win) return;
+    try {
+      const tasks = await api.get<MitigationTask[]>(`/risks/${risk.id}/mitigation-tasks`);
+      printRisk(risk, tasks, win);
+    } catch (e) {
+      win.close();
+      setError(e instanceof ApiError ? e.message : String(e));
     }
   };
 
@@ -421,6 +446,22 @@ export default function RiskDetailPage() {
           </Typography>
         </Box>
         <Stack direction="row" spacing={1}>
+          {compact ? (
+            <Tooltip title={tDelivery("editor.exportPdf")}>
+              <IconButton onClick={exportPdf}>
+                <MaterialSymbol icon="picture_as_pdf" size={20} />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
+              size="small"
+              startIcon={<MaterialSymbol icon="picture_as_pdf" size={18} />}
+              sx={{ textTransform: "none" }}
+              onClick={exportPdf}
+            >
+              {tDelivery("editor.pdf")}
+            </Button>
+          )}
           <Button
             variant="outlined"
             color="error"

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate, useSearchParams } from "react-router";
 import Box from "@mui/material/Box";
@@ -22,6 +22,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import MaterialSymbol from "@/components/MaterialSymbol";
 import RichTextEditor from "./RichTextEditor";
 import SignatureRequestDialog from "./SignatureRequestDialog";
@@ -31,6 +33,7 @@ import { usePageSubject } from "@/hooks/usePageTitle";
 import { useAuth } from "@/hooks/useAuth";
 import { hasPermission } from "@/components/RequirePermission";
 import { ExtensionBoundary, ExtensionSlot, useExtensionAdrPanels } from "@/lib/extensionHost";
+import { printAdr } from "./adrPrint";
 import type { Card, ArchitectureDecision, SoAWSignatory } from "@/types";
 
 const STATUS_COLORS: Record<string, "default" | "warning" | "success"> = {
@@ -47,7 +50,12 @@ export default function ADREditor() {
   const { formatDate } = useDateFormat();
   const { user } = useAuth();
   const adrPanels = useExtensionAdrPanels();
+  const theme = useTheme();
+  const compact = useMediaQuery(theme.breakpoints.down("sm"));
   const isNew = !id;
+  // The record as last loaded, so an export keeps the audit fields (creator,
+  // created / modified dates) the editor has no state for.
+  const loadedRef = useRef<ArchitectureDecision | null>(null);
 
   // ADR state
   const [title, setTitle] = useState("");
@@ -123,6 +131,7 @@ export default function ADREditor() {
     api
       .get<ArchitectureDecision>(`/adr/${id}`)
       .then((adr) => {
+        loadedRef.current = adr;
         setTitle(adr.title);
         setStatus(adr.status);
         setContext(adr.context || "");
@@ -141,6 +150,42 @@ export default function ADREditor() {
   }, [id, t]);
 
   // Save
+  // Exports read the editor's live state, unsaved edits included — the SoAW
+  // editor does the same, so what you see is what you print.
+  const editorAdr = (): ArchitectureDecision => ({
+    related_decisions: [],
+    created_by: null,
+    parent_id: null,
+    created_at: null,
+    updated_at: null,
+    ...(loadedRef.current ?? {}),
+    id: id ?? "",
+    reference_number: referenceNumber,
+    title,
+    status: status as ArchitectureDecision["status"],
+    context,
+    decision,
+    consequences,
+    alternatives_considered: alternatives,
+    signatories,
+    signed_at: signedAt,
+    revision_number: revisionNumber,
+    attributes,
+    linked_cards: linkedCards,
+  });
+
+  const handleExportPdf = () => printAdr(editorAdr());
+
+  const handleExportWord = async () => {
+    try {
+      // Lazy: keeps the docx engine out of the editor chunk until asked for.
+      const { exportAdrsToDocx } = await import("./adrExport");
+      await exportAdrsToDocx([editorAdr()]);
+    } catch {
+      setError(t("adr.export.error"));
+    }
+  };
+
   const handleSave = useCallback(async () => {
     if (!title.trim()) {
       setError(t("adr.editor.titleRequired"));
@@ -403,6 +448,58 @@ export default function ADREditor() {
           color={STATUS_COLORS[status] || "default"}
           size="small"
         />
+
+        {/* Preview / PDF / Word — the SoAW editor's export trio, same shape. */}
+        {!isNew &&
+          (compact ? (
+            <Tooltip title={t("editor.preview")}>
+              <IconButton onClick={() => navigate(`/ea-delivery/adr/${id}/preview`)}>
+                <MaterialSymbol icon="visibility" size={20} />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
+              size="small"
+              startIcon={<MaterialSymbol icon="visibility" size={18} />}
+              sx={{ textTransform: "none" }}
+              onClick={() => navigate(`/ea-delivery/adr/${id}/preview`)}
+            >
+              {t("editor.preview")}
+            </Button>
+          ))}
+        {compact ? (
+          <Tooltip title={t("editor.exportPdf")}>
+            <IconButton onClick={handleExportPdf}>
+              <MaterialSymbol icon="picture_as_pdf" size={20} />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Button
+            size="small"
+            startIcon={<MaterialSymbol icon="picture_as_pdf" size={18} />}
+            sx={{ textTransform: "none" }}
+            onClick={handleExportPdf}
+          >
+            {t("editor.pdf")}
+          </Button>
+        )}
+        {!isSigned &&
+          (compact ? (
+            <Tooltip title={t("editor.exportWord")}>
+              <IconButton onClick={handleExportWord}>
+                <MaterialSymbol icon="article" size={20} />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
+              size="small"
+              startIcon={<MaterialSymbol icon="article" size={18} />}
+              sx={{ textTransform: "none" }}
+              onClick={handleExportWord}
+            >
+              {t("editor.word")}
+            </Button>
+          ))}
       </Box>
 
       {/* ── Signed Banner ── */}
