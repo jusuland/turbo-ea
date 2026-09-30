@@ -75,6 +75,21 @@ El snapshot no contiene lo siguiente — el importador marca lo faltante en la c
 - **Historial de auditoría** previo a la importación — el historial de Turbo EA comienza con el timestamp de apply.
 - **Diagramas / pósters / dashboards / búsquedas guardadas / preferencias de notificación / tokens API / webhooks** — sin equivalente en Turbo EA o sin análogo en el snapshot.
 
+## Exportar a SAP LeanIX
+
+La misma página funciona también en sentido inverso. **Exportar espacio de trabajo** (junto a **Nueva migración**) descarga el espacio de trabajo actual como un **paquete de Integration API de LeanIX**: un `.zip` que se carga en LeanIX mediante **Administración → Integration API**. LeanIX no puede importar su propio libro *Full Snapshot* (SAP restaura las instantáneas a petición); la Integration API es la única importación masiva que un administrador de LeanIX puede ejecutar por sí mismo.
+
+El paquete contiene:
+
+- **`ldif.json`**: los datos en el formato LeanIX Data Interchange Format: un elemento por tarjeta (tipo de fact sheet nombrado al estilo LeanIX — `Process` para Proceso de negocio, `Project` para Iniciativa, `UserGroup` para Organización — con nombre, descripción, subtipo, fases del ciclo de vida, todos los atributos, etiquetas, partes interesadas como suscripciones y enlaces a documentos) y un elemento por relación con los nombres de relación de LeanIX (`relApplicationToITComponent`, …). La jerarquía se convierte en `relToParent`; las relaciones de sucesión se escriben en la dirección de LeanIX. El id de la tarjeta de Turbo EA se guarda como id externo del fact sheet, de modo que ejecutar el paquete dos veces actualiza en lugar de duplicar.
+- **`processors.json`**: la configuración de procesadores generada para esta exportación concreta: un procesador de fact sheets por tipo que escribe solo los campos presentes, un procesador de relaciones por tipo de relación, más procesadores de etiquetas, suscripciones y recursos. El modo de procesamiento es *partial*: no se elimina nada en el espacio de trabajo de destino y una actualización conserva el valor de LeanIX cuando la tarjeta exportada no lo tiene.
+- **`comments.json`**: los comentarios, que la Integration API no puede importar, conservados como referencia.
+- **`README.md`**: los pasos de carga (navegador y REST), los tipos y relaciones exportados y qué ajustar.
+
+Para cargarlo: cree una configuración de procesadores en **Administración → Integration API** con los datos del conector del README, pegue `processors.json` como configuración y `ldif.json` como entrada, pulse **Test run** para ver todos los problemas sin escribir nada y después **Run**. LeanIX informa de cualquier campo, subtipo, tipo de relación o usuario que su espacio de trabajo no tenga: créelo allí o elimine esa entrada de `processors.json`. Los tipos creados en Turbo EA se exportan con su propia clave y necesitan antes el mismo tipo en el metamodelo de LeanIX.
+
+Las tarjetas archivadas se excluyen salvo que se marque **Incluir tarjetas archivadas**. La exportación está protegida por `admin.export_workspace`, el mismo permiso que la exportación del paquete de espacio de trabajo, porque el archivo es el panorama completo.
+
 ## Reejecución de un import
 
 La idempotencia está incorporada. La tabla `migration_identity_map` registra la asignación UUID LeanIX → Turbo EA para cada entidad importada. Un re-upload del mismo snapshot (o de un snapshot actualizado del mismo workspace) detecta entidades existentes y escribe filas staged `update`/`skip` en vez de duplicar `create`s. El `external_id` de la tarjeta lleva el `factSheetId` de LeanIX, por lo que el vínculo sobrevive incluso si se borra la identity map.

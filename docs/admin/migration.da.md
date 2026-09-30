@@ -85,6 +85,21 @@ Snapshottet bærer ikke disse — importøren viser, hvad der mangler i per-ræk
 - **Revisionshistorik** før importen — Turbo EA's historik starter ved apply-tidsstemplet.
 - **Diagrammer / poster views / dashboards / gemte søgninger / notifikationspræferencer / API-tokens / webhooks** — ingen ækvivalent i Turbo EA eller ingen analog i snapshottet.
 
+## Eksport til SAP LeanIX
+
+Samme side fungerer også den modsatte vej. **Eksportér arbejdsområde** (ved siden af **Ny migrering**) downloader det aktuelle arbejdsområde som en **LeanIX Integration API-pakke** – en `.zip`, du indlæser i LeanIX via **Administration → Integration API**. LeanIX kan ikke importere sin egen *Full Snapshot*-projektmappe (SAP gendanner snapshots på forespørgsel); Integration API er den eneste masseimport, en LeanIX-administrator selv kan køre.
+
+Pakken indeholder:
+
+- **`ldif.json`** – data i LeanIX Data Interchange Format: ét element pr. kort (fact sheet-typen navngivet som i LeanIX – `Process` for Forretningsproces, `Project` for Initiativ, `UserGroup` for Organisation – med navn, beskrivelse, undertype, livscyklusfaser, alle attributter, tags, interessenter som subscriptions og dokumentlinks) og ét element pr. relation under LeanIX' relationsnavne (`relApplicationToITComponent`, …). Hierarkiet bliver til `relToParent`; efterfølgerrelationer skrives i LeanIX' retning. Turbo EA-kortets id gemmes som fact sheetets eksterne id, så en gentagen kørsel opdaterer i stedet for at duplikere.
+- **`processors.json`** – processorkonfigurationen genereret til netop denne eksport: én fact sheet-processor pr. type, der kun skriver de felter, kortene faktisk har, én relationsprocessor pr. relationstype samt processorer til tags, subscriptions og ressourcer. Behandlingstilstanden er *partial*: intet slettes i målarbejdsområdet, og en opdatering beholder LeanIX' værdi, når det eksporterede kort ikke har nogen.
+- **`comments.json`** – kommentarer, som Integration API ikke kan importere, gemt til reference.
+- **`README.md`** – indlæsningstrinnene (browser og REST), de eksporterede typer og relationer og hvad der skal tilpasses.
+
+Sådan indlæses pakken: Opret en processorkonfiguration under **Administration → Integration API** med connector-oplysningerne fra README, indsæt `processors.json` som konfiguration og `ldif.json` som input, klik på **Test run** for at se alle problemer uden at skrive noget, og derefter på **Run**. LeanIX melder ethvert felt, enhver undertype, relationstype eller bruger, som arbejdsområdet ikke har – opret det dér, eller fjern posten fra `processors.json`. Typer oprettet i Turbo EA eksporteres under deres egen nøgle og kræver først samme type i LeanIX' metamodel.
+
+Arkiverede kort udelades, medmindre **Medtag arkiverede kort** er markeret. Eksporten er beskyttet af `admin.export_workspace` – samme tilladelse som eksporten af arbejdsområde-bundtet, fordi filen er hele landskabet.
+
 ## Genkørsel af en import
 
 Idempotens er indbygget. Tabellen `migration_identity_map` registrerer kildesiden → Turbo EA-UUID for hver entitet, der er blevet importeret (nøglet af `(source_id, entity_kind, source_type)`, så samme eksterne id legitimt kan eksistere i imports fra to forskellige kilder). En genupload af samme snapshot (eller et opdateret snapshot fra samme arbejdsområde) detekterer eksisterende entiteter og skriver `update`- / `skip`-staged rækker i stedet for duplikerede `create`s. Kortets `external_id` bærer kildesidens id (LeanIX `factSheetId`, Ardoq-komponent-id, …), så linket overlever, selv hvis identitetskortet tørres.

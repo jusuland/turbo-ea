@@ -85,6 +85,21 @@ The snapshot does not carry these — the importer surfaces what is missing in t
 - **Audit history** prior to the import — Turbo EA's history starts at the apply timestamp.
 - **Diagrams / poster views / dashboards / saved searches / notification preferences / API tokens / webhooks** — no equivalent in Turbo EA, or no analog in the snapshot.
 
+## Exporting to SAP LeanIX
+
+The same page also runs in reverse. **Export workspace** (next to **New migration**) downloads the current workspace as a **LeanIX Integration API bundle** — a `.zip` you load through **Administration → Integration API** in LeanIX. LeanIX cannot import its own *Full Snapshot* workbook (SAP restores snapshots on request), so the Integration API is the one bulk import a LeanIX administrator can run alone.
+
+The bundle contains:
+
+- **`ldif.json`** — the data in the LeanIX Data Interchange Format: one item per card (the fact-sheet type named the LeanIX way — `Process` for Business Process, `Project` for Initiative, `UserGroup` for Organization — with name, description, subtype, lifecycle phases, every attribute, tags, stakeholders as subscriptions and document links) and one item per relation under LeanIX's relation names (`relApplicationToITComponent`, …). The hierarchy becomes `relToParent`; lineage relations are written in LeanIX's direction. The Turbo EA card id is stored as the fact sheet's external id, so running the bundle twice updates rather than duplicates.
+- **`processors.json`** — the processor configuration generated for exactly this export: one fact-sheet processor per type writing only the fields the cards carry, one relation processor per relation type, plus tag, subscription and resource processors. The processing mode is *partial*: nothing in the target workspace is deleted, and an update keeps LeanIX's value when the exported card has none.
+- **`comments.json`** — comments, which the Integration API cannot import, kept for reference.
+- **`README.md`** — the load steps (browser and REST), the types and relations in the export, and what to adjust.
+
+To load it: create a processor configuration in **Administration → Integration API** with the connector details from the README, paste `processors.json` as the configuration and `ldif.json` as the input, click **Test run** to see every problem without writing anything, then **Run**. LeanIX reports any field, subtype, relation type or user its workspace does not have — add it there or remove that entry from `processors.json`. Types created in Turbo EA are exported under their own key and need the same type in the LeanIX meta model first.
+
+Archived cards are left out unless **Include archived cards** is ticked. The export is gated by `admin.export_workspace`, the same permission as the workspace bundle export, because the file is the whole landscape.
+
 ## Re-running an import
 
 Idempotency is built in. The `migration_identity_map` table records the source-side → Turbo EA UUID for every entity that has been imported (keyed by `(source_id, entity_kind, source_type)` so the same external id can legitimately exist in imports from two different sources). A re-upload of the same snapshot (or an updated snapshot from the same workspace) detects existing entities and writes `update` / `skip` staged rows rather than duplicate `create`s. The card's `external_id` carries the source-side id (LeanIX `factSheetId`, Ardoq component id, …) so the link survives even if the identity map is wiped.

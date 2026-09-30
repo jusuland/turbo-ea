@@ -75,6 +75,21 @@ xlsx 的第一张表（`ReadMe`）是 LeanIX 的权威字段参考：每一列�
 - **导入之前的审计历史** — Turbo EA 历史从 apply 时间戳开始。
 - **图表 / 海报视图 / 仪表板 / 已保存搜索 / 通知偏好 / API 令牌 / Webhook** — Turbo EA 中无对应物，或快照中无类似项。
 
+## 导出到 SAP LeanIX
+
+同一页面也可以反向使用。**导出工作区**（位于**新建迁移**旁）会将当前工作区下载为 **LeanIX Integration API 导入包**——一个通过 LeanIX 的**管理 → Integration API** 加载的 `.zip` 文件。LeanIX 无法导入自己的 *Full Snapshot* 工作簿（SAP 只能应请求恢复快照），因此 Integration API 是 LeanIX 管理员能够独立运行的唯一批量导入方式。
+
+导入包包含：
+
+- **`ldif.json`**——LeanIX Data Interchange Format 格式的数据：每张卡片一个条目（事实表类型按 LeanIX 方式命名——业务流程为 `Process`，举措为 `Project`，组织为 `UserGroup`——包含名称、描述、子类型、生命周期阶段、全部属性、标签、作为订阅的干系人以及文档链接），每个关系一个条目，使用 LeanIX 的关系名称（`relApplicationToITComponent` 等）。层级结构变为 `relToParent`；继任关系按 LeanIX 的方向写入。Turbo EA 的卡片 ID 保存为事实表的外部 ID，因此再次运行该包会更新而不是重复创建。
+- **`processors.json`**——专为本次导出生成的处理器配置：每个类型一个事实表处理器（只写入卡片实际携带的字段），每个关系类型一个关系处理器，以及标签、订阅和资源处理器。处理模式为 *partial*：目标工作区中不会删除任何内容，当导出的卡片没有某个值时，更新会保留 LeanIX 的现有值。
+- **`comments.json`**——Integration API 无法导入的评论，仅供参考。
+- **`README.md`**——加载步骤（浏览器和 REST）、导出中包含的类型与关系，以及需要调整的内容。
+
+加载方法：在**管理 → Integration API** 中按 README 中的连接器信息创建处理器配置，将 `processors.json` 粘贴为配置、`ldif.json` 粘贴为输入，先点击 **Test run** 在不写入任何内容的情况下查看所有问题，再点击 **Run**。LeanIX 会报告其工作区中不存在的字段、子类型、关系类型或用户——请在那里创建，或从 `processors.json` 中删除相应条目。在 Turbo EA 中创建的类型按其自身的键导出，需要先在 LeanIX 元模型中创建同名类型。
+
+除非勾选**包含已归档的卡片**，否则已归档的卡片不会导出。导出受 `admin.export_workspace` 权限保护——与工作区包导出相同的权限，因为该文件就是整个架构全景。
+
 ## 重新运行 import
 
 幂等性已内置。`migration_identity_map` 表记录每个已导入实体的 LeanIX → Turbo EA UUID 映射。重新上传相同快照（或同一工作区的更新快照）会检测已存在的实体并写入 `update`/`skip` staged 行，而非重复 `create`。卡片的 `external_id` 携带 LeanIX 的 `factSheetId`，因此即便 identity map 被清空，链接仍可恢复。
