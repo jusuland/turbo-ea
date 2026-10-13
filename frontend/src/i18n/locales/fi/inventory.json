@@ -32,7 +32,7 @@
   "columns.stakeholderRole": "Sidosryhmät: {{role}}",
   "columns.reset": "Nollaa",
   "columns.alwaysVisible": "Aina näkyvissä",
-  "columns.parent": "Yläkansi",
+  "columns.parent": "Ylätaso",
   "gridEdit.parentHint": "Tyhjennä kenttä siirtääksesi tämän kortin ylimmälle tasolle.",
   "gridEdit.parentFailed": "Yläkorttia ei voitu muuttaa.",
   "gridEdit.attrFailed": "Arvoa ei voitu tallentaa.",
