@@ -81,7 +81,7 @@
   "flowTab.withdrawalReasonLabel": "Syy",
   "flowTab.withdrawalReasonHelp": "Pakollinen, vähintään {{min}} merkkiä. Tallennetaan pysyvästi versiohistoriaan.",
   "flowTab.withdrawnByOn": "Peruutettu {{name}}:n toimesta {{date}}",
-  "flowTab.withdrawnByOnRevision": "{{nimi}} päivänä {{päivämäärä}} — Versio {{versio}}",
+  "flowTab.withdrawnByOnRevision": "{{name}} päivänä {{date}} — Versio {{revision}}",
   "flowTab.fromWithdrawnRevision": "Avattu peruutetusta versiosta {{revision}}",
   "flowTab.originallyApprovedBy": "Alun perin hyväksynyt {{name}} päivänä {{date}}",
   "flowTab.pendingApproval": "Odottaa hyväksyntää",
