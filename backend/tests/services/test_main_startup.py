@@ -101,6 +101,7 @@ def boot(monkeypatch):
     patched = {}
     for target in (
         "app.services.seed.seed_metamodel",
+        "app.services.locale_backfill.ensure_finnish_enabled",
         "app.services.extensions.instance_id.ensure_instance_id",
         "app.services.email_backends.runtime.apply_email_settings_to_runtime",
     ):
@@ -130,6 +131,7 @@ class TestMigrateAndSeed:
         assert engine.ddl == ["drop_all", "create_all"]
         assert boot.stamp.call_count == 1 and boot.upgrade.call_count == 0
         assert boot.patched["app.services.seed.seed_metamodel"].await_count == 1
+        assert boot.patched["app.services.locale_backfill.ensure_finnish_enabled"].await_count == 1
         assert boot.init.await_args.args == ("report",)
 
     @pytest.mark.parametrize(("has_alembic", "version"), [(False, None), (True, None)])
