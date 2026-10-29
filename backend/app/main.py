@@ -885,6 +885,12 @@ async def _migrate_and_seed(extension_load_report) -> list[asyncio.Task]:
         await seed_metamodel(db)
     logger.info("[startup] Metamodel seed complete")
 
+    from app.services.locale_backfill import ensure_finnish_enabled
+
+    async with async_session() as db:
+        if await ensure_finnish_enabled(db):
+            logger.info("[startup] Added Finnish to the enabled locales")
+
     # Optionally seed demo data (NexaTech Industries dataset)
     if settings.SEED_DEMO:
         from app.services.seed_demo import seed_demo_data
