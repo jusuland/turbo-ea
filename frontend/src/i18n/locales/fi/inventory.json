@@ -274,5 +274,8 @@
   "filter.typesUncategorized": "Luokittelemattomat",
   "import.errors.expectsPercentage": "Rivi {{row}}: kentän {{field}} arvon on oltava 0–100, mutta saatiin {{value}}",
   "filter.linkType": "Suhdetyyppi",
-  "massEdit.rel.attributesHint": "Käytetään jokaiseen lisättyyn suhteeseen. Jo valittuun kohteeseen linkitetyille korteille lisätään myös nämä tiedot; tyhjiksi jätetyt tiedot säilyvät ennallaan."
+  "massEdit.rel.attributesHint": "Käytetään jokaiseen lisättyyn suhteeseen. Jo valittuun kohteeseen linkitetyille korteille lisätään myös nämä tiedot; tyhjiksi jätetyt tiedot säilyvät ennallaan.",
+  "columns.createdVia": "Luontilähde",
+  "columns.updatedVia": "Muokkauslähde",
+  "filter.origin": "Lähde"
 }
