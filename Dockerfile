@@ -113,6 +113,7 @@ COPY frontend/package.json frontend/package-lock.json frontend/xlsx-0.20.3.tgz .
 RUN npm ci
 COPY VERSION ./VERSION
 COPY frontend/ ./
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 
