@@ -305,5 +305,6 @@
   "risks.col.source": "Lähde",
   "risks.field.acceptanceRationale": "Hyväksymisen perustelut",
   "risks.action.transitionNotAllowed": "Tilasiirtymä {{from}} → {{to}} ei ole sallittu",
-  "risks.export.documentTitle": "Riski"
+  "risks.export.documentTitle": "Riski",
+  "risks.col.origin": "Alkuperä"
 }
