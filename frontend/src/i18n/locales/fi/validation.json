@@ -1,10 +1,6 @@
 {
   "required": "Tämä kenttä on pakollinen",
   "requiredEmpty": "Tämä kenttä on pakollinen — täytä se tallentaaksesi.",
-  "invalidEmail": "Virheellinen sähköpostiosoite",
-  "tooLong": "Liian pitkä (enintään {{max}} merkkiä)",
-  "tooShort": "Liian lyhyt (vähintään {{min}} merkkiä)",
-  "invalidUrl": "Virheellinen URL-osoite",
 
   "key.mustStartWithLetter": "Täytyy alkaa kirjaimella",
   "key.noUnderscores": "Alaviivoja ei sallita — käytä camelCase-kirjoitustapaa",
