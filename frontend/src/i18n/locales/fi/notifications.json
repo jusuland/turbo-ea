@@ -53,5 +53,8 @@
   "preferences.extensionAvailable": "Uusi laajennus saatavilla",
   "preferences.extensionUpdateAvailable": "Laajennuksen päivitys saatavilla",
   "preferences.extensionUpdated": "Laajennus päivitetty",
-  "preferences.extensionNotice": "Laajennusta koskeva ilmoitus"
+  "preferences.extensionNotice": "Laajennusta koskeva ilmoitus",
+  "preferences.adrStandingChanged": "Arkkitehtuuripäätöksen voimassaolotila muuttunut",
+  "preferences.documentComment": "Päätösten ja SoAW-asiakirjojen kommentit",
+  "preferences.documentMention": "Maininnat keskusteluissa"
 }

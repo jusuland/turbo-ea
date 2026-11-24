@@ -427,8 +427,6 @@
   "adrs.linkDialog.title": "Liitä arkkitehtuuripäätös",
   "adrs.linkDialog.search": "Etsi päätöksiä...",
   "adrs.linkDialog.empty": "Linkitettäviä arkkitehtuuripäätöksiä ei ole saatavilla.",
-  "adrs.linkDialog.noMatch": "Hakusi ei tuottanut tuloksia.",
-  "adrs.linkDialog.clearSearch": "Tyhjennä haku",
   "resources.addLinkDialog.title": "Lisää asiakirjalinkki",
   "resources.addLinkDialog.name": "Nimi",
   "resources.addLinkDialog.url": "URL",
@@ -764,5 +762,12 @@
   "history.viaSurvey": "kyselyllä «{{name}}»",
   "history.viaSurveyUnnamed": "kyselyllä",
   "history.surveyRespondent": "Vastaaja: {{name}}",
-  "history.events.surveySent": "Kysely lähetetty"
+  "history.events.surveySent": "Kysely lähetetty",
+  "attributes.extLocked": "vain luku",
+  "attributes.extLockedTooltip": "Vain luku: tätä kenttää tarjoava laajennus ei ole aktiivinen tai lisensoitu",
+  "comments.confirmDelete": "Poistetaanko tämä kommentti? Toimintoa ei voi kumota.",
+  "comments.confirmDeleteWithReplies_one": "Poistetaanko tämä kommentti ja sen {{count}} vastaus? Toimintoa ei voi kumota.",
+  "comments.confirmDeleteWithReplies_other": "Poistetaanko tämä kommentti ja sen {{count}} vastausta? Toimintoa ei voi kumota.",
+  "comments.deleteFailed": "Kommenttia ei voitu poistaa. Yritä uudelleen.",
+  "history.events.commentDeleted": "Kommentti poistettu"
 }

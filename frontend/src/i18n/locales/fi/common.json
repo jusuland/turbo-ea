@@ -107,7 +107,7 @@
   "dashboard.trend.vsDays_other": "verrattuna viimeisiin {{count}} päivään",
   "dashboard.trend.flat": "Ei muutoksia",
   "dashboard.trend.collecting": "Kerätään trenditietoja…",
-  "dashboard.trend.points": "pts",
+  "dashboard.trend.points": "pist.",
   "dashboard.trend.caption": "Trendi-indikaattorit perustuvat viimeisiin 30 päivään",
   "dashboard.tabs.overview": "Yleiskatsaus",
   "dashboard.tabs.workspace": "Oma työtila",
@@ -794,5 +794,18 @@
   "spreadsheetImport.doneSkipped_one": "{{count}} rivi ohitettiin.",
   "spreadsheetImport.doneSkipped_other": "{{count}} riviä ohitettiin.",
   "spreadsheetImport.doneFailed_one": "{{count}} riviä ei tuotu virheiden vuoksi.",
-  "spreadsheetImport.doneFailed_other": "{{count}} riviä ei tuotu virheiden vuoksi."
+  "spreadsheetImport.doneFailed_other": "{{count}} riviä ei tuotu virheiden vuoksi.",
+  "filter.clearSection": "Tyhjennä {{section}}-suodattimet",
+  "dashboard.activity.action.adr.recorded": "kirjasi arkkitehtuuripäätöksen päätetyksi:",
+  "dashboard.activity.action.adr.created": "loi arkkitehtuuripäätöksen",
+  "dashboard.activity.action.adr.linked": "linkitti arkkitehtuuripäätöksen kohteeseen",
+  "dashboard.activity.action.adr.unlinked": "poisti arkkitehtuuripäätöksen linkityksen kohteesta",
+  "dashboard.activity.action.adr.comment_added": "kommentoi kohdetta:",
+  "dashboard.activity.action.soaw.comment_added": "kommentoi kohdetta:",
+  "dashboard.activity.document.adr": "päätös",
+  "dashboard.activity.document.soaw": "SoAW-asiakirja",
+  "ai.applyFailed": "Ehdotusta ei voitu käyttää",
+  "ai.applyFailedHint": "Korttia ei muutettu. Yritä uudelleen.",
+  "ai.noSuggestion": "Tekoäly ei löytänyt ehdotettavaa. Yritä uudelleen tai käytä tarkempaa nimeä.",
+  "ai.fieldsSkipped": "Kuvaus lisättiin. Muita ehdotettuja arvoja ei voitu tallentaa: {{reason}}"
 }
